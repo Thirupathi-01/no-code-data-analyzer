@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Excel Upload</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        button { background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        table, th, td { border: 1px solid #ddd; }
+        th, td { padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .column-types { margin: 20px 0; }
+        .column-type { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Upload Excel File</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.as_p }}
+            </div>
+            <button type="submit">Upload</button>
+        </form>
+
+        {% if filename %}
+            <hr>
+            <h3>File: {{ filename }}</h3>
+            
+            {% if column_types %}
+                <div class="column-types">
+                    <h4>Column Types:</h4>
+                    {% if column_types.numeric %}
+                        <div class="column-type">
+                            <strong>Numeric columns:</strong> {{ column_types.numeric|join:", " }}
+                        </div>
+                    {% endif %}
+                    {% if column_types.categorical %}
+                        <div class="column-type">
+                            <strong>Categorical columns:</strong> {{ column_types.categorical|join:", " }}
+                        </div>
+                    {% endif %}
+                    {% if column_types.datetime %}
+                        <div class="column-type">
+                            <strong>Datetime columns:</strong> {{ column_types.datetime|join:", " }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if df_head %}
+                <h4>Data Preview:</h4>
+                {{ df_head|safe }}
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>
